@@ -6,5 +6,6 @@ dependencies:
   - pandas
   - unittest
   - python
+  - ipykernel
   - pip:
            
