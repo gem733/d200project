@@ -4,5 +4,7 @@ channels:
   - conda-forge
 dependencies:
   - pandas
+  - unittest
+  - python
   - pip:
            
