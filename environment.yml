@@ -1,0 +1,8 @@
+name: d200proj
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - pandas
+  - pip:
+           
