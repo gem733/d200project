@@ -7,5 +7,7 @@ dependencies:
   - unittest
   - python
   - ipykernel
+  - pytorch
+  - scikit-learn
   - pip:
            

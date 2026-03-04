@@ -1,6 +1,6 @@
 import unittest
 import pandas as pd
-from src.load_data import load_data
+from src.data.load_data import load_data
 
 class TestLoadCSVDataset(unittest.TestCase):
     
