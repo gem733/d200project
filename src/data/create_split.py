@@ -26,15 +26,15 @@ def create_split(df, target_col, test_size=0.1, validate_size=(2/9), validate_en
     y = df[target_col]
 
     # Split off test set
-    x_temp, x_test, y_temp, y_test = train_test_split(
+    X_temp, X_test, y_temp, y_test = train_test_split(
         X, y, test_size=test_size, random_state=random_state)
 
     # Split remaining data into training and validation sets
-    x_train, x_val, y_train, y_val = train_test_split(
-        x_temp, y_temp, test_size=validate_size, random_state=random_state)
+    X_train, X_val, y_train, y_val = train_test_split(
+        X_temp, y_temp, test_size=validate_size, random_state=random_state)
     
     # Split validation set into validation and ensemble validation sets
-    x_val, x_val_ens, y_val, y_val_ens = train_test_split(
-        x_val, y_val, test_size=validate_ensemble_size, random_state=random_state)
+    X_val, X_val_ens, y_val, y_val_ens = train_test_split(
+        X_val, y_val, test_size=validate_ensemble_size, random_state=random_state)
 
-    return x_train, x_test, x_val, x_val_ens, y_train, y_test, y_val, y_val_ens
+    return X_train, X_test, X_val, X_val_ens, y_train, y_test, y_val, y_val_ens
