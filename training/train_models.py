@@ -26,7 +26,7 @@ from src.models.neural_network import train_neural_network
 from src.data.create_split import create_split
 
 
-def run_pipeline(file_path: str, epochs_nn: int = 1500):
+def train_models(file_path: str, epochs_nn: int = 1500):
     """
     Complete ML pipeline:
     - Loads and preprocesses data
@@ -45,7 +45,9 @@ def run_pipeline(file_path: str, epochs_nn: int = 1500):
     df = df.drop(columns=drop_cols, errors='ignore')  # errors='ignore' in case some columns missing
 
     # Preprocess
-    df = convert_strings(df)
+    cols_to_convert = df.select_dtypes(include="object").columns.tolist()
+    cols_to_convert = [c for c in cols_to_convert if c != "region"]
+    df = convert_strings(df, cols_to_convert)
 
     if 'region' in df.columns:
         df = one_hot_encode(df, 'region')
