@@ -114,10 +114,12 @@ def train_models(file_path: str, epochs_nn: int = 1500):
     return {
         "models": models,
         "scaler": scaler,
+        "x_train_scaled": x_train_scaled,
+        "y_train": y_train,
         "x_test_scaled": x_test_scaled,
         "y_test": y_test,
         "x_val_scaled": x_val_scaled,
         "x_val_ens_scaled": x_val_ens_scaled,
         "y_val": y_val,
         "y_val_ens": y_val_ens
-    }
+}
