@@ -9,5 +9,6 @@ dependencies:
   - ipykernel
   - pytorch
   - scikit-learn
+  - numpy
   - pip:
            
