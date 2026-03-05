@@ -4,19 +4,30 @@ import torch.optim as optim
 import random
 import numpy as np
 
+
 class NeuralNetwork(nn.Module):
     """
-    Simple feedforward neural network for regression.
+    Flexible feedforward neural network for regression.
+    Allows multiple hidden layers.
     """
 
-    def __init__(self, input_dim, hidden_dim):
+    def __init__(self, input_dim, architecture):
         super().__init__()
 
-        self.layers = nn.Sequential(
-            nn.Linear(input_dim, hidden_dim),
-            nn.ReLU(),
-            nn.Linear(hidden_dim, 1)
-        )
+        layers = []
+        prev_dim = input_dim
+
+        # Build hidden layers dynamically
+        for hidden_dim in architecture:
+            layers.append(nn.Linear(prev_dim, hidden_dim))
+            layers.append(nn.ReLU())
+            prev_dim = hidden_dim
+
+        # Output layer
+        layers.append(nn.Linear(prev_dim, 1))
+        layers.append(nn.ReLU())  # keeps predictions >= 0
+
+        self.layers = nn.Sequential(*layers)
 
     def forward(self, x):
         return self.layers(x)
@@ -32,30 +43,12 @@ def train_neural_network(
     y_train,
     X_val,
     y_val,
-    hidden_dims=None,
+    architectures=None,
     learning_rates=None,
     epochs=100
 ):
     """
     Train a neural network and tune hyperparameters using validation data.
-
-    Parameters
-    ----------
-    X_train : torch.Tensor
-    y_train : torch.Tensor
-    X_val : torch.Tensor
-    y_val : torch.Tensor
-    hidden_dims : list
-        Hidden layer sizes to search over
-    learning_rates : list
-        Learning rates to search over
-    epochs : int
-        Number of training epochs
-
-    Returns
-    -------
-    best_model : torch.nn.Module
-    best_params : dict
     """
 
     seed = 42
@@ -66,8 +59,16 @@ def train_neural_network(
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 
-    if hidden_dims is None:
-        hidden_dims = [16, 32, 64]
+    # Architectures to search (each list = one architecture)
+    if architectures is None:
+        architectures = [
+            [16],
+            [32],
+            [64],
+            [32, 16],
+            [64, 32],
+            [64, 32, 16]
+        ]
 
     if learning_rates is None:
         learning_rates = [0.001, 0.01]
@@ -79,10 +80,10 @@ def train_neural_network(
     best_nn_params = None
 
     # Hyperparameter tuning
-    for hidden_dim in hidden_dims:
+    for arch in architectures:
         for lr in learning_rates:
 
-            model = NeuralNetwork(input_dim, hidden_dim)
+            model = NeuralNetwork(input_dim, arch)
             optimizer = optim.Adam(model.parameters(), lr=lr)
 
             for epoch in range(epochs):
@@ -107,7 +108,7 @@ def train_neural_network(
             if val_loss < best_mse:
                 best_mse = val_loss
                 best_nn_params = {
-                    "hidden_dim": hidden_dim,
+                    "architecture": arch,
                     "learning_rate": lr
                 }
 
@@ -115,8 +116,11 @@ def train_neural_network(
     X_combined = torch.cat([X_train, X_val])
     y_combined = torch.cat([y_train, y_val])
 
-    best_nn_model = NeuralNetwork(input_dim, best_nn_params["hidden_dim"])
-    optimizer = optim.Adam(best_nn_model.parameters(), lr=best_nn_params["learning_rate"])
+    best_nn_model = NeuralNetwork(input_dim, best_nn_params["architecture"])
+    optimizer = optim.Adam(
+        best_nn_model.parameters(),
+        lr=best_nn_params["learning_rate"]
+    )
 
     for epoch in range(epochs):
 

@@ -21,8 +21,11 @@ from sklearn.metrics import mean_squared_error, r2_score
 import torch
 
 def main():
+    # Get project root directory
+    root = Path(__file__).resolve().parents[1]
+
     # Path to raw CSV file
-    file_path = os.path.join("data", "raw", "constituencies_dataset.csv")
+    file_path = root / "data" / "raw" / "constituencies_dataset.csv"
     
     # Run the full pipeline
     results = train_models(file_path)
@@ -81,7 +84,8 @@ def main():
         "x_test_scaled": x_test_scaled,
         "y_test": y_test,
         "ensemble_preds": ensemble_preds,
-        "ensemble_weights": ensemble_weights
+        "ensemble_weights": ensemble_weights,
+        "meta_preds": meta_preds
     }
 
 if __name__ == "__main__":

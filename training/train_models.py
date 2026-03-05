@@ -41,7 +41,7 @@ def train_models(file_path: str, epochs_nn: int = 1500):
 
     # Drop unwanted columns
     drop_cols = ["area", "votes", "last_party", "last_election", 
-                 "swing", "year", "majority", "constituency"]
+                 "swing", "year", "majority", "constituency", "inv_majority", "2010", "2015", "2017", "2019"]
     df = df.drop(columns=drop_cols, errors='ignore')  # errors='ignore' in case some columns missing
 
     # Preprocess
