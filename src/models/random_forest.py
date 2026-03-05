@@ -67,4 +67,7 @@ def train_random_forest(X_train, y_train, X_val, y_val,
 
     best_rf_model.fit(X_combined, y_combined)
 
+    print("Random Forest trained")
+    print(f"Best RF Params: {best_rf_params}")
+
     return best_rf_model, best_rf_params

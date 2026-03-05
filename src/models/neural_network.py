@@ -1,7 +1,8 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-
+import random
+import numpy as np
 
 class NeuralNetwork(nn.Module):
     """
@@ -57,6 +58,14 @@ def train_neural_network(
     best_params : dict
     """
 
+    seed = 42
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+
     if hidden_dims is None:
         hidden_dims = [16, 32, 64]
 
@@ -77,9 +86,6 @@ def train_neural_network(
             optimizer = optim.Adam(model.parameters(), lr=lr)
 
             for epoch in range(epochs):
-
-                if epoch % 100 == 0:
-                    print(f"Epoch {epoch}")
 
                 model.train()
 
@@ -123,5 +129,8 @@ def train_neural_network(
 
         loss.backward()
         optimizer.step()
+
+    print("Neural Network trained")
+    print(f"Best NN Params: {best_nn_params}")
 
     return best_nn_model, best_nn_params

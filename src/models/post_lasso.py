@@ -41,4 +41,7 @@ def train_post_lasso(X_train, y_train, X_val, y_val, alphas=None):
     best_lasso_model = Lasso(alpha=best_alpha, max_iter=10000)
     best_lasso_model.fit(X_combined, y_combined)
 
+    print("Post-LASSO trained")
+    print(f"Best Lasso Params: {best_alpha}")
+
     return best_lasso_model, best_alpha

@@ -99,16 +99,6 @@ def train_models(file_path: str, epochs_nn: int = 1500):
         "Neural Network": best_nn_model
     }
 
-    for name, model in models.items():
-        if name == "Neural Network":
-            y_pred = model.predict(X_test_t).numpy()
-        else:
-            y_pred = model.predict(x_test_scaled)
-
-        mse = mean_squared_error(y_test, y_pred)
-        r2 = r2_score(y_test, y_pred)
-
-        print(f"{name} - MSE: {mse:.4f}, R²: {r2:.4f}")
 
     # Return models and scalers for SHAP / plotting / ensemble
     return {
