@@ -15,6 +15,7 @@ import sys
 sys.path.append(str(Path(__file__).resolve().parents[1]))  # adds root folder
 
 from training.train_ensemble import ensemble_models
+from training.train_meta_ensemble import train_meta_ensemble
 from training.train_models import train_models
 from sklearn.metrics import mean_squared_error, r2_score
 import torch
@@ -42,7 +43,7 @@ def main():
     y_test = results["y_test"]
     
     
-    # Train ensemble
+    # Train ensembles
     ensemble_preds, ensemble_weights, ensemble_mse, ensemble_r2 = ensemble_models(
         models,
         x_val_ens_scaled,
@@ -51,7 +52,14 @@ def main():
         y_test
     )
     
-    
+    meta_model, meta_preds, meta_weights = train_meta_ensemble(
+        models,
+        x_val_ens_scaled,
+        y_val_ens,
+        x_test_scaled,
+        y_test
+    )
+
     print("\nIndividual model test metrics:")
     for name, model in models.items():
         if name == "Neural Network":
