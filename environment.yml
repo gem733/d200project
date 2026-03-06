@@ -12,6 +12,7 @@ dependencies:
   - numpy
   - pathlib
   - matplotlib
+  - scipy
   - shap
   - pip:
            

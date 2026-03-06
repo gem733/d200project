@@ -1,7 +1,9 @@
 import numpy as np
 from sklearn.metrics import mean_squared_error, r2_score
 from scipy.optimize import minimize
+from scipy.optimize import differential_evolution
 
+from src import models
 
 def ensemble_models(models, x_val_ens_scaled, y_val_ens, x_test_scaled, y_test):
     """
@@ -42,7 +44,7 @@ def ensemble_models(models, x_val_ens_scaled, y_val_ens, x_test_scaled, y_test):
     
     # Initial guess:
     n_models = val_preds.shape[0]
-    w0 = np.ones(n_models) / n_models
+    w0 = np.array([0.2, 0.4, 0.4])
     
     # Constraints:
     constraints = (
@@ -50,7 +52,8 @@ def ensemble_models(models, x_val_ens_scaled, y_val_ens, x_test_scaled, y_test):
     )
     bounds = [(0, 1) for _ in range(n_models)]
     
-    res = minimize(loss_fn, w0, bounds=bounds, constraints=constraints)
+    bounds = [(0,1)] * n_models
+    res = differential_evolution(lambda w: loss_fn(w), bounds, seed=42)
     weights = res.x
 
 
@@ -76,7 +79,7 @@ def ensemble_models(models, x_val_ens_scaled, y_val_ens, x_test_scaled, y_test):
     # Return results
     print("Ensemble weights:")
     for w, name in zip(weights, models.keys()):
-        print(f"{name}: {w:.3f}")
+        print(f"{name}: {w:.4f}")
     
     print(f"Ensemble MSE (test): {mse:.4f}")
     print(f"Ensemble R² (test): {r2:.4f}")

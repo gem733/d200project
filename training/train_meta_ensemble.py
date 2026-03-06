@@ -58,7 +58,7 @@ def train_meta_ensemble(models, x_val_ens_scaled, y_val_ens, x_test_scaled, y_te
     meta_model.fit(meta_X, meta_y)
 
     # Get weights for each base model
-    weights = dict(zip(models.keys(), meta_model.coef_))
+    ensemble_weights = dict(zip(models.keys(), meta_model.coef_))
 
     # Make predictions on test set
     test_preds = []
@@ -77,7 +77,9 @@ def train_meta_ensemble(models, x_val_ens_scaled, y_val_ens, x_test_scaled, y_te
     r2 = r2_score(y_test, meta_preds)
 
     print("Meta-Learner Ensemble trained")
-    print(f"Ensemble weights: {weights}")
+    print("Ensemble weights:")
+    for name, w in ensemble_weights.items():
+        print(f"{name}: {w:.4f}")
     print(f"MSE: {mse:.4f}, R²: {r2:.4f}")
 
-    return meta_model, meta_preds, weights
+    return meta_model, meta_preds, ensemble_weights
